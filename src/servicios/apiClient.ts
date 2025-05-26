@@ -28,7 +28,7 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export const axiosClient = {
+export const apiClient = {
   get: async <T>(url: string): Promise<T> => {
     const res = await axiosInstance.get<T>(url);
     return res.data;

@@ -1,42 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { apiClient } from "./servicios/apiClient";
+import Card from "./components/Card";
 import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Table from "./components/Table";
+import type { ProductoType } from "./types/Products";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const id: string = "682c91021458dda78015985c";
   const url = "http://localhost:3000/api/productos";
-  const cargarProducto = async (id: string) => {
-    setCount(count + 1);
-    const config = {
-      methos: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await fetch(`${url}/${id}`, config);
-    const result = await response.json();
-    console.log(result);
+
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [quantity, setQuantity] = useState(0);
+  const [idProducto, setIdProducto] = useState("");
+
+  const [productos, setProductos] = useState<ProductoType[]>([]);
+  useEffect(() => {
+    apiClient.get<ProductoType[]>(url).then((resp: ProductoType[]) => {
+      setProductos(resp);
+    });
+  }, []);
+
+  const obtenerProducto = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const response2 = await apiClient.get<ProductoType>(`${url}/${idProducto}`);
+    setName(response2.name);
+    setPrice(response2.price);
+    setQuantity(response2.quantity);
+  };
+
+  const handleInptChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIdProducto(event.target.value);
   };
 
   return (
     <div className="container">
-      <h1>Productos encontrados {count}</h1>
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() => cargarProducto(id)}
-      >
-        Cargar productos
-      </button>
-      <ToastContainer />
-      <div className="card mt-3">
-        <div className="card-header">
-          <h3>Productos</h3>
+      <div className="row">
+        <div className="col-6">
+          <h1>Mis recetas favoritas</h1>
+          <form action="" onSubmit={obtenerProducto}>
+            <input
+              type="text"
+              className="form-control mb-3"
+              placeholder="id producto"
+              onChange={handleInptChange}
+            />
+            <button type="submit" className="btn btn-primary">
+              Cargar productos
+            </button>
+          </form>
         </div>
-        <div className="card-body">name</div>
+        <div className="col-6">
+          {name && <Card name={name} price={price} quantity={quantity} />}
+        </div>
+      </div>
+      <div className="row mt-3">
+        {productos && <Table productos={productos} />}
       </div>
     </div>
   );
