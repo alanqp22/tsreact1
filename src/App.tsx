@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
 import { apiClient } from "./servicios/apiClient";
 import Card from "./components/Card";
-import "./App.css";
 import Table from "./components/Table";
 import type { ProductoType } from "./types/Products";
+import "./App.css";
 
 function App() {
   const url = "http://localhost:3000/api/productos";
-
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [quantity, setQuantity] = useState(0);
   const [idProducto, setIdProducto] = useState("");
-
+  const [producto, setProducto] = useState<ProductoType | null>(null);
   const [productos, setProductos] = useState<ProductoType[]>([]);
   useEffect(() => {
     apiClient.get<ProductoType[]>(url).then((resp: ProductoType[]) => {
@@ -23,9 +19,7 @@ function App() {
   const obtenerProducto = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const response2 = await apiClient.get<ProductoType>(`${url}/${idProducto}`);
-    setName(response2.name);
-    setPrice(response2.price);
-    setQuantity(response2.quantity);
+    setProducto(response2);
   };
 
   const handleInptChange = async (
@@ -51,9 +45,7 @@ function App() {
             </button>
           </form>
         </div>
-        <div className="col-6">
-          {name && <Card name={name} price={price} quantity={quantity} />}
-        </div>
+        <div className="col-6">{producto && <Card producto={producto} />}</div>
       </div>
       <div className="row mt-3">
         {productos && <Table productos={productos} />}
