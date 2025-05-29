@@ -32,7 +32,10 @@ function App() {
     <div className="container">
       <div className="row">
         <div className="col-6">
-          <h1>Mis recetas favoritas</h1>
+          <h1 className="bg-amber-200 text-3xl font-bold underline">Hello world!</h1>
+          <h1 className="text-4xl bg-clip-text text-transparent font-extrabold bg-linear-to-r from-cyan-300 to-red-500">
+            Mis recetas favoritas
+          </h1>
           <form action="" onSubmit={obtenerProducto}>
             <input
               type="text"
@@ -40,12 +43,12 @@ function App() {
               placeholder="id producto"
               onChange={handleInptChange}
             />
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="bg-mint-500 hover:bg-emerald-600 p-2 rounded-lg block mx-auto my-8 w-60 text-white">
               Cargar productos
             </button>
           </form>
         </div>
-        <div className="col-6">{producto && <Card producto={producto} />}</div>
+        <div className="bg-linear-to-r from-cyan-500 to-blue-500 border-4 border-emerald-900">{producto && <Card producto={producto} />}</div>
       </div>
       <div className="row mt-3">
         {productos && <Table productos={productos} />}
